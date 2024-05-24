@@ -1,0 +1,23 @@
+{
+  "Version": 1,
+  "Hash": "otTjcrBn3R9trjk+l7UHtt+hpqV1oAD8fBpesbPnE78=",
+  "Source": "BugTracker.Server",
+  "BasePath": "_content/BugTracker.Server",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [
+    {
+      "Identity": "C:\\Users\\nghoc\\source\\repos\\BugTracker\\bugtracker.client\\bugtracker.client.esproj",
+      "Version": 2,
+      "Source": "bugtracker.client",
+      "GetPublishAssetsTargets": "GetCurrentProjectPublishStaticWebAssetItems",
+      "AdditionalPublishProperties": "",
+      "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained",
+      "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
+      "AdditionalBuildProperties": "",
+      "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained"
+    }
+  ],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

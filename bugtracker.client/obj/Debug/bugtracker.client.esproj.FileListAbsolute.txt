@@ -1,0 +1,1 @@
+C:\Users\nghoc\source\repos\BugTracker\bugtracker.client\obj\Debug\bugtracker.client.esproj.CoreCompileInputs.cache
