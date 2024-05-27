@@ -1,4 +1,4 @@
-namespace BugTracker.Server
+namespace Microsoft.BugTracker
 {
     public class WeatherForecast
     {

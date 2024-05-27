@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace BugTracker.Server.Controllers
+namespace Microsoft.BugTracker.Controllers
 {
     [ApiController]
     [Route("[controller]")]

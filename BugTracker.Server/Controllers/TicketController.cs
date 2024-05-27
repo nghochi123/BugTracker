@@ -1,33 +1,118 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.BugTracker.Dtos;
+using Microsoft.BugTracker.Entities;
+using Microsoft.BugTracker.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
-namespace BugTracker.Server.Controllers
+namespace Microsoft.BugTracker.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/projects/{projectId}/tickets")]
     public class TicketController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        private readonly ITicketService _ticketService;
+        private readonly IProjectService _projectService;
 
-        private readonly ILogger<TicketController> _logger;
-
-        public TicketController(ILogger<TicketController> logger)
+        public TicketController(ITicketService ticketService, IProjectService projectService)
         {
-            _logger = logger;
+            _ticketService = ticketService;
+            _projectService = projectService;
+
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet]
+        public async Task<IActionResult> GetAllProjectTickets(string projectId){
+            var projectTickets = await _ticketService.GetAllTicketsAsync(projectId);
+            return Ok(projectTickets);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> AddTicket(
+            string projectId,
+            [FromBody] CreateTicketDto ticketInformation
+        )
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            var loggedInUsername = User.Identity.Name;
+            var userIsPartOfProject = await _projectService.CheckIfUserIsPartOfProjectAsync(projectId, loggedInUsername);
+            if (userIsPartOfProject)
             {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+                Ticket ticket = new Ticket(
+                    ticketInformation.Title,
+                    ticketInformation.Description,
+                    ticketInformation.Priority,
+                    ticketInformation.Status,
+                    [],
+                    DateTime.Now.ToUniversalTime(),
+                    DateTime.Now.ToUniversalTime(),
+                    ticketInformation.Tags,
+                    projectId
+                );
+
+                await _ticketService.AddTicketAsync(ticket);
+                return Ok("Ticket Created");
+            }
+            return Unauthorized("You are not allowed to access this resource.");
+
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTicketById(
+            string id
+        )
+        {
+            var ticketDto = await _ticketService.GetProjectTicketById(id);
+            return Ok(ticketDto);
+
+        }
+
+        [Authorize]
+        [HttpPut]
+        public async Task<IActionResult> UpdateProjectTicket(
+            [FromBody] TicketDto ticketInformation,
+            string projectId
+        )
+        {
+            var loggedInUsername = User.Identity.Name;
+            Console.WriteLine($"Username {loggedInUsername}");
+            var userIsPartOfProject = await _projectService.CheckIfUserIsPartOfProjectAsync(projectId, loggedInUsername);
+            if (userIsPartOfProject)
+            {
+                Ticket ticket = new(
+                    ticketInformation.Title,
+                    ticketInformation.Description,
+                    ticketInformation.Priority,
+                    ticketInformation.Status,
+                    ticketInformation.AssignedUserNames,
+                    ticketInformation.CreatedAt,
+                    DateTime.Now.ToUniversalTime(),
+                    ticketInformation.Tags,
+                    projectId
+                ){
+                    Id=ticketInformation.Id
+                };
+                await _ticketService.UpdateProjectTicketAsync(ticket);
+                return Ok("Ticket Updated.");
+            }
+            return Unauthorized("You are not allowed to access this resource.");
+
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProjectTicket(
+            string id,
+            string projectId
+        )
+        {
+            var loggedInUsername = User.Identity.Name;
+            var userIsPartOfProject = await _projectService.CheckIfUserIsPartOfProjectAsync(projectId, loggedInUsername);
+            if (userIsPartOfProject)
+            {
+                await _ticketService.DeleteProjectTicketById(id);
+                return Ok("Ticket deleted.");
+            }
+            return Unauthorized("You are not allowed to access this resource.");
         }
     }
 }

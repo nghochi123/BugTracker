@@ -13,11 +13,11 @@ public class Ticket(
     string description,
     int priority,
     Progress status,
-    int[] assignedUserIds,
+    string[] assignedUserNames,
     DateTime createdAt,
     DateTime updatedAt,
     string[] tags,
-    int projectId
+    string projectId
     
     ) : BaseEntity
 {
@@ -25,11 +25,15 @@ public class Ticket(
     public string Description { get; private set; } = description;
     public int Priority { get; private set; } = priority;
     public Progress Status { get; private set; } = status;
-    public int[] AssignedUserIds { get; private set; } = assignedUserIds;
+    public string[] AssignedUserNames { get; private set; } = assignedUserNames;
     public DateTime CreatedAt { get; private set; } = createdAt;
     public DateTime UpdatedAt { get; private set; } = updatedAt;
     public string[] Tags { get; private set; } = tags;
     [ForeignKey("Project")]
-    public int ProjectId { get; private set; } = projectId;
+    public string ProjectId { get; private set; } = projectId;
+
+    public void SetUpdatedAt(DateTime updatedAt){
+        UpdatedAt = updatedAt;
+    }
 
 }   

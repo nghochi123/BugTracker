@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 public class Comment(
     string ticketId,
-    string userId,
+    string userName,
     string content,
     DateTime createdAt,
     DateTime updatedAt
@@ -16,5 +16,9 @@ public class Comment(
     [ForeignKey("Ticket")]
     public string TicketId { get; private set; } = ticketId;
     [ForeignKey("User")]
-    public string UserId { get; private set; } = userId;
+    public string UserName { get; private set; } = userName;
+
+    public void SetUpdatedAt(DateTime updatedAt){
+        UpdatedAt = updatedAt;
+    }
 }

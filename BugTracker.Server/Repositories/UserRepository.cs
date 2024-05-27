@@ -17,5 +17,21 @@ public class UserRepository(ApplicationDbContext context)
         await _context.SaveChangesAsync();
     }
 
-    // Additional methods to update, delete, etc.
+    public async Task<User> GetUserByIdAsync(string userName)
+    {
+        return await _context.Users.FindAsync(userName);
+    }
+    public async Task<User> UpdateUserAsync(User user)
+    {
+        var oldUser = await _context.Users.FindAsync(user.UserName);
+        if (oldUser == null)
+        {
+            throw new ArgumentException("User not found with id: " + oldUser.UserName);
+        }
+        _context.Entry(oldUser).CurrentValues.SetValues(user);
+        await _context.SaveChangesAsync();
+        return user;
+    }
+
+    
 }
