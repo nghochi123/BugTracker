@@ -62,6 +62,10 @@ namespace Microsoft.BugTracker.Controllers
         )
         {
             var ticketDto = await _ticketService.GetProjectTicketById(id);
+            if (ticketDto == null)
+            {
+                return NotFound();
+            }
             return Ok(ticketDto);
 
         }

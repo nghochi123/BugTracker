@@ -56,6 +56,10 @@ namespace Microsoft.BugTracker.Controllers
         )
         {
             var comment = await _commentService.GetCommentByIdAsync(commentId);
+            if (comment == null)
+            {
+                return NotFound();
+            }
             return Ok(comment);
         }
 
