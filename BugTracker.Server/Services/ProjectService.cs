@@ -82,7 +82,6 @@ public class ProjectService(ProjectRepository projectRepository) : IProjectServi
         await _projectRepository.RemoveProjectUserAsync(projectId, userId);
     }
     public async Task<bool> CheckIfUserIsPartOfProjectAsync(string projectId, string userName){
-        Console.Write(projectId, userName);
         return await _projectRepository.CheckIfUserIsPartOfProjectAsync(projectId, userName);
     }
 }

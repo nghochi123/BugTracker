@@ -5,6 +5,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import Topbar from "../../components/Topbar";
+import TicketBar from "../../components/TicketBar";
 import MainLayout from "../layout/MainLayout";
 import { Ticket } from "../../types/ticket";
 import { UserDisplay } from "../../types/user";
@@ -102,6 +103,7 @@ export default function ViewTicket() {
                                         }
                                         editUrl={`/projects/${id}/tickets/${ticketId}/edit`}
                                     />
+                                    <TicketBar ticket={ticket} />
                                 </>
                             ) : null}
                             {comments

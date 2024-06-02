@@ -52,7 +52,6 @@ public class ProjectRepository(ApplicationDbContext context)
     // Assigning Users to projects
     public async Task<List<ProjectUser>> GetAllUserProjectsAsync(string username)
     { 
-        Console.WriteLine(username);
         var projectUsers = await _context.ProjectUsers
                                      .Include(pu => pu.Project)
                                      .Where(pu => pu.User.UserName == username)
@@ -71,7 +70,6 @@ public class ProjectRepository(ApplicationDbContext context)
 
     public async Task AddProjectUserAsync(ProjectUser projectUser){
         _context.ProjectUsers.Add(projectUser);
-        Console.WriteLine(projectUser.UserName, projectUser.Id);
         await _context.SaveChangesAsync();
     }
 
@@ -93,7 +91,6 @@ public class ProjectRepository(ApplicationDbContext context)
 
     public async Task<bool> CheckIfUserIsPartOfProjectAsync(string projectId, string userName)
     {
-        Console.WriteLine($"{projectId} {userName}");
         var pUser = await _context.ProjectUsers.FirstOrDefaultAsync(
             p => p.UserName == userName && p.ProjectId == projectId
         );

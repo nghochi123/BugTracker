@@ -9,7 +9,6 @@ public class CommentRepository(ApplicationDbContext context)
     public async Task<List<Comment>> GetAllCommentsAsync(string ticketId)
     {
         var allComments = await _context.Comments.ToListAsync();
-        Console.WriteLine(ticketId);
         var ticketComments = allComments.Where(t => t.TicketId == ticketId).ToList();
         return ticketComments;
     }

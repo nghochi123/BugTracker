@@ -14,11 +14,13 @@ export default function AddCommentBox({
         <Paper elevation={1} sx={{ p: 2 }}>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
-                    <Typography>Add a comment</Typography>
+                    <Typography style={{ fontWeight: "bold" }}>
+                        Add a comment
+                    </Typography>
                 </Grid>
                 <Grid item xs={12}>
                     <TextField
-                        rows={10}
+                        rows={5}
                         fullWidth
                         multiline
                         value={comment}

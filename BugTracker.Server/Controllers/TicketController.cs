@@ -78,7 +78,6 @@ namespace Microsoft.BugTracker.Controllers
         )
         {
             var loggedInUsername = User.Identity.Name;
-            Console.WriteLine($"Username {loggedInUsername}");
             var userIsPartOfProject = await _projectService.CheckIfUserIsPartOfProjectAsync(projectId, loggedInUsername);
             if (userIsPartOfProject)
             {

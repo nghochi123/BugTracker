@@ -29,8 +29,7 @@ export default function Home() {
                     })
                 );
             })
-            .catch((e) => {
-                console.log(e);
+            .catch(() => {
                 navigate("/login");
             });
     }, []);
