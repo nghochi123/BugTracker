@@ -50,10 +50,20 @@ public class ProjectRepository(ApplicationDbContext context)
     }
 
     // Assigning Users to projects
+    public async Task<List<ProjectUser>> GetAllUserProjectsAsync(string username)
+    { 
+        Console.WriteLine(username);
+        var projectUsers = await _context.ProjectUsers
+                                     .Include(pu => pu.Project)
+                                     .Where(pu => pu.User.UserName == username)
+                                     .ToListAsync();
+        return projectUsers;
+        
+    }
     public async Task<List<ProjectUser>> GetAllProjectUsersAsync(string id)
     { 
 
-        var projectUsers = await _context.ProjectUsers.ToListAsync();
+         var projectUsers = await _context.ProjectUsers.ToListAsync();
         projectUsers = projectUsers.Where(x => x.ProjectId == id).ToList();
         return projectUsers;
         
@@ -61,6 +71,7 @@ public class ProjectRepository(ApplicationDbContext context)
 
     public async Task AddProjectUserAsync(ProjectUser projectUser){
         _context.ProjectUsers.Add(projectUser);
+        Console.WriteLine(projectUser.UserName, projectUser.Id);
         await _context.SaveChangesAsync();
     }
 

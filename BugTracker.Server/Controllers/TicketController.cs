@@ -42,7 +42,7 @@ namespace Microsoft.BugTracker.Controllers
                     ticketInformation.Description,
                     ticketInformation.Priority,
                     ticketInformation.Status,
-                    [],
+                    ticketInformation.AssignedUserNames,
                     DateTime.Now.ToUniversalTime(),
                     DateTime.Now.ToUniversalTime(),
                     ticketInformation.Tags,
@@ -69,7 +69,7 @@ namespace Microsoft.BugTracker.Controllers
         [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateProjectTicket(
-            [FromBody] TicketDto ticketInformation,
+            [FromBody] UpdateTicketDto updateTicketInformation,
             string projectId
         )
         {
@@ -78,18 +78,19 @@ namespace Microsoft.BugTracker.Controllers
             var userIsPartOfProject = await _projectService.CheckIfUserIsPartOfProjectAsync(projectId, loggedInUsername);
             if (userIsPartOfProject)
             {
+                var ticketDto = await _ticketService.GetProjectTicketById(updateTicketInformation.Id);
                 Ticket ticket = new(
-                    ticketInformation.Title,
-                    ticketInformation.Description,
-                    ticketInformation.Priority,
-                    ticketInformation.Status,
-                    ticketInformation.AssignedUserNames,
-                    ticketInformation.CreatedAt,
+                    updateTicketInformation.Title,
+                    updateTicketInformation.Description,
+                    updateTicketInformation.Priority,
+                    updateTicketInformation.Status,
+                    updateTicketInformation.AssignedUserNames,
+                    ticketDto.CreatedAt,
                     DateTime.Now.ToUniversalTime(),
-                    ticketInformation.Tags,
+                    updateTicketInformation.Tags,
                     projectId
                 ){
-                    Id=ticketInformation.Id
+                    Id=ticketDto.Id
                 };
                 await _ticketService.UpdateProjectTicketAsync(ticket);
                 return Ok("Ticket Updated.");

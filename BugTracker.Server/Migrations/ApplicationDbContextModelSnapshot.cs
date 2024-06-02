@@ -73,18 +73,18 @@ namespace BugTracker.Server.Migrations
 
             modelBuilder.Entity("Microsoft.BugTracker.Entities.ProjectUser", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
                     b.Property<string>("ProjectId")
                         .HasColumnType("text");
 
                     b.Property<string>("UserName")
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
-                    b.HasIndex("ProjectId");
+                    b.HasKey("ProjectId", "UserName");
+
+                    b.HasIndex("UserName");
 
                     b.ToTable("ProjectUsers");
                 });
@@ -152,10 +152,31 @@ namespace BugTracker.Server.Migrations
 
             modelBuilder.Entity("Microsoft.BugTracker.Entities.ProjectUser", b =>
                 {
-                    b.HasOne("Microsoft.BugTracker.Entities.Project", null)
-                        .WithMany()
+                    b.HasOne("Microsoft.BugTracker.Entities.Project", "Project")
+                        .WithMany("ProjectUsers")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.BugTracker.Entities.User", "User")
+                        .WithMany("ProjectUsers")
+                        .HasForeignKey("UserName")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Microsoft.BugTracker.Entities.Project", b =>
+                {
+                    b.Navigation("ProjectUsers");
+                });
+
+            modelBuilder.Entity("Microsoft.BugTracker.Entities.User", b =>
+                {
+                    b.Navigation("ProjectUsers");
                 });
 #pragma warning restore 612, 618
         }

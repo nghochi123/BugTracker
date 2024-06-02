@@ -56,6 +56,14 @@ namespace Microsoft.BugTracker.Controllers
             return Unauthorized("Invalid username or password");
         }
 
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync("CookieAuth");
+
+            return Ok("User logged out");
+        }
+
         [HttpGet("{userName}")]
         public async Task<IActionResult> GetUser(string userName)
         {
@@ -82,6 +90,14 @@ namespace Microsoft.BugTracker.Controllers
             }
             await _userService.UpdateUserAsync(userDetails);
             return Ok("User Updated.");
+        }
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var loggedInUsername = User.Identity.Name;
+            var userDto = await _userService.GetUserByIdAsync(loggedInUsername);
+            return Ok(userDto);
         }
 
         

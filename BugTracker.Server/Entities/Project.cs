@@ -12,8 +12,9 @@ public class Project(
     public string Description { get; private set; } = description;
     public DateTime CreatedAt { get; private set; } = createdAt;
     public DateTime UpdatedAt { get; private set; } = updatedAt;
-
     public void SetUpdatedAt(DateTime updatedAt){
         UpdatedAt = updatedAt;
     }
+
+    public ICollection<ProjectUser> ProjectUsers { get; set; }
 }

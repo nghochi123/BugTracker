@@ -24,6 +24,19 @@ namespace Microsoft.BugTracker.Entities
                 .WithOne()
                 .HasForeignKey(pu => pu.TicketId)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ProjectUser>()
+                .HasKey(pu => new { pu.ProjectId, pu.UserName }); // Composite key
+
+            modelBuilder.Entity<ProjectUser>()
+                .HasOne(pu => pu.Project)
+                .WithMany(p => p.ProjectUsers)
+                .HasForeignKey(pu => pu.ProjectId);
+
+            modelBuilder.Entity<ProjectUser>()
+                .HasOne(pu => pu.User)
+                .WithMany(u => u.ProjectUsers)
+                .HasForeignKey(pu => pu.UserName);
         }
+        
     }
 }

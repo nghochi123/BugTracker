@@ -31,8 +31,13 @@ namespace Microsoft.BugTracker.Controllers
             [FromBody] CreateProjectDto project
         )
         {
-            await _projectService.CreateProjectAsync(project);
-            return Ok("Project Created");
+            var loggedInUsername = User.Identity.Name;
+            var projectId = await _projectService.CreateProjectAsync(project);
+            await _projectService.AddProjectUserAsync(new ProjectUser(
+                projectId,
+                loggedInUsername
+            ));
+            return Ok(projectId);
         }
 
         [HttpGet("{id}")]
@@ -50,18 +55,19 @@ namespace Microsoft.BugTracker.Controllers
         [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateProject(
-            [FromBody] ProjectDto projectDto
+            [FromBody] UpdateProjectDto updateProjectDto
         )
         {
             var loggedInUsername = User.Identity.Name;
-            var userIsPartOfProject = await _projectService.CheckIfUserIsPartOfProjectAsync(projectDto.Id, loggedInUsername);
+            var userIsPartOfProject = await _projectService.CheckIfUserIsPartOfProjectAsync(updateProjectDto.Id, loggedInUsername);
             if (userIsPartOfProject)
             {
+                var projectDto = await _projectService.GetProjectByIdAsync(updateProjectDto.Id);
                 Project project = new(
-                    projectDto.Name,
-                    projectDto.Description,
+                    updateProjectDto.Name,
+                    updateProjectDto.Description,
                     projectDto.CreatedAt,
-                    projectDto.UpdatedAt
+                    DateTime.Now.ToUniversalTime()
                 )
                 {
                     Id = projectDto.Id
@@ -87,6 +93,15 @@ namespace Microsoft.BugTracker.Controllers
         }
 
         // Assigning Users to projects
+
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetAllUserProjects()
+        {
+            var loggedInUsername = User.Identity.Name;
+            var projectUsers = await _projectService.GetAllUserProjectsAsync(loggedInUsername);
+            return Ok(projectUsers);
+        }
 
         [HttpGet("{projectId}/users")]
         public async Task<IActionResult> GetAllProjectUsers(string projectId)

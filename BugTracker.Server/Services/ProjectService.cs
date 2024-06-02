@@ -42,7 +42,7 @@ public class ProjectService(ProjectRepository projectRepository) : IProjectServi
             );
     }
 
-    public async Task CreateProjectAsync(CreateProjectDto createProject)
+    public async Task<string> CreateProjectAsync(CreateProjectDto createProject)
     {
         Project project = new(
             createProject.Name,
@@ -51,6 +51,7 @@ public class ProjectService(ProjectRepository projectRepository) : IProjectServi
             DateTime.Now.ToUniversalTime()
         );
         await _projectRepository.AddProjectAsync(project);
+        return project.Id;
     }
 
     public async Task UpdateProjectAsync(Project project)
@@ -64,6 +65,10 @@ public class ProjectService(ProjectRepository projectRepository) : IProjectServi
     }
 
     // Assigning Users to Projects
+
+    public async Task<List<ProjectUser>> GetAllUserProjectsAsync(string username){
+        return await _projectRepository.GetAllUserProjectsAsync(username);
+    }
 
     public async Task<List<ProjectUser>> GetAllProjectUsersAsync(string id){
         return await _projectRepository.GetAllProjectUsersAsync(id);

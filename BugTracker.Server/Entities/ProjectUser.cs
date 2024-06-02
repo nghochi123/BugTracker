@@ -11,4 +11,7 @@ public class ProjectUser(
     public string ProjectId { get; private set; } = projectId;
     [ForeignKey("User")]
     public string UserName { get; private set; } = userName;
+
+    public User User { get; set; }
+    public Project Project { get; set; }
 }

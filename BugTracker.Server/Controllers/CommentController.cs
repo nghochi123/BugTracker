@@ -35,12 +35,11 @@ namespace Microsoft.BugTracker.Controllers
         {
             var loggedInUsername = User.Identity.Name;
             var userIsPartOfProject = await _projectService.CheckIfUserIsPartOfProjectAsync(projectId, loggedInUsername);
-            var userIsPartOfProject2 = await _projectService.CheckIfUserIsPartOfProjectAsync(projectId, commentInformation.UserName);
-            if (userIsPartOfProject && userIsPartOfProject2)
+            if (userIsPartOfProject)
             {
                 Comment comment = new(
                     ticketId,
-                    commentInformation.UserName,
+                    loggedInUsername,
                     commentInformation.Content,
                     DateTime.Now.ToUniversalTime(),
                     DateTime.Now.ToUniversalTime()
@@ -64,22 +63,23 @@ namespace Microsoft.BugTracker.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateComment(
             string projectId,
-            [FromBody] CommentDto commentInformation
+            [FromBody] UpdateCommentDto updateCommentInformation
         )
         {
             var loggedInUsername = User.Identity.Name;
             var userIsPartOfProject = await _projectService.CheckIfUserIsPartOfProjectAsync(projectId, loggedInUsername);
             if (userIsPartOfProject)
             {
+                var commentDto = await _commentService.GetCommentByIdAsync(updateCommentInformation.Id);
                 Comment comment = new(
-                    commentInformation.TicketId,
-                    commentInformation.UserName,
-                    commentInformation.Content,
-                    commentInformation.CreatedAt,
-                    commentInformation.UpdatedAt
+                    updateCommentInformation.TicketId,
+                    updateCommentInformation.UserName,
+                    updateCommentInformation.Content,
+                    commentDto.CreatedAt,
+                    DateTime.Now.ToUniversalTime()
                 )
                 {
-                    Id = commentInformation.Id
+                    Id = updateCommentInformation.Id
                 };
                 await _commentService.UpdateCommentAsync(comment);
                 return Ok("Comment Updated");
